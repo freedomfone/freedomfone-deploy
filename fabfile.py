@@ -4,6 +4,8 @@ from fabric.context_managers import shell_env
 
 @task
 def copy_public_key():
+    """Copy your rsa public key from ~/.ssh/id_rsa.pub to the remote server.
+    """
     put(local_path="~/.ssh/id_rsa.pub", remote_path="~/id_rsa.pub")
     run("mkdir -p ~/.ssh")
     run("cat ~/id_rsa.pub >> ~/.ssh/authorized_keys")
@@ -13,6 +15,13 @@ def copy_public_key():
 
 @task
 def deploy():
+    """Deploy a Freedom Fone instance to a clean installation of Ubuntu 12.04.
+
+    This *might* work in a non clean install, but it was only tested
+    against fresh installations of 12.04. Right now it depends on some
+    binary packages that are only compiled for 12.04, so other Ubuntu
+    versions will most likely not work properly.
+    """
     install_deps()
 
     run("mkdir -p /opt/freedomfone")
@@ -68,6 +77,8 @@ def deploy():
 
 @task
 def install_demo_data():
+    """Installs a voice menu and leave a message service for testing and demo.
+    """
     with cd("/opt/freedomfone"):
         run("sh demo_install.sh")
 
