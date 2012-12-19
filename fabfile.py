@@ -1,6 +1,7 @@
 from fabric.api import task, run, put, cd
 from fabric.context_managers import shell_env
 
+
 @task
 def copy_public_key():
     put(local_path="~/.ssh/id_rsa.pub", remote_path="~/id_rsa.pub")
@@ -8,6 +9,7 @@ def copy_public_key():
     run("cat ~/id_rsa.pub >> ~/.ssh/authorized_keys")
     run("chmod -R 600 ~/.ssh")
     run("rm ~/id_rsa.pub")
+
 
 @task
 def deploy():
@@ -62,6 +64,12 @@ def deploy():
         run("service freeswitch start")
         run("service gsmopen reload")
         run("service dispatcher_in start")
+
+
+@task
+def install_demo_data():
+    with cd("/opt/freedomfone"):
+        run("sh demo_install.sh")
 
 
 def install_deps():
