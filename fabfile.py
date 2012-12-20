@@ -1,5 +1,8 @@
-from fabric.api import task, run, put, cd
+from fabric.api import task, run, sudo, put, cd
 from fabric.context_managers import shell_env
+
+
+BINARY_DOWNLOAD_SERVER="http://archive.freedomfone.org/installer_1204/"
 
 
 @task
@@ -28,15 +31,9 @@ def deploy():
     with cd("/opt/freedomfone"):
         run("svn co https://dev.freedomfone.org/svn/freedomfone/branches/3.0/ .")
 
-        run("sh download_bin_1204.sh")
         with cd("packages"):
-            # Install Cepstral
-            run("tar zxvf Cepstral_Allison-8kHz_i386-linux_5.1.0.tar.gz")
-            with cd("Cepstral_Allison-8kHz_i386-linux_5.1.0"):
-                run("sh install.sh agree /opt/swift")
-
-            # Install freeswitch
-            run("sh install_fs_1204.sh")
+            install_cepstral()
+            install_freeswitch()
 
         # Configs
         with cd("rootconf_1204"):
@@ -90,6 +87,26 @@ def install_deps():
     with shell_env(DEBIAN_FRONTEND="noninteractive"):
         run("apt-get install -y {0}".format(" ".join(DEPENDENCIES)))
 
+
+def install_cepstral():
+    CEPSTRAL="Cepstral_Allison-8kHz_i386-linux_5.1.0"
+    run("wget -nc {0}/{1}.tar.gz".format(BINARY_DOWNLOAD_SERVER, CEPSTRAL))
+    run("tar zxvf {0}.tar.gz".format(CEPSTRAL))
+    with cd(CEPSTRAL):
+        run("sh install.sh agree /opt/swift")
+
+
+def install_freeswitch():
+    BUILD="1.2~ffrc3-1_i386"
+
+    all_urls = ["{0}/{1}_{2}.deb".format(BINARY_DOWNLOAD_SERVER, package, BUILD)
+                for package in FREESWITCH_BINARIES]
+    all_debs = ["{0}*deb".format(package) for package in FREESWITCH_BINARIES]
+
+    run("wget -nc {0}".format(" ".join(all_urls)))
+    run("dpkg -i {0}".format(" ".join(all_debs)))
+
+
 DEPENDENCIES = [
     "apache2",
     "bsd-mailx",
@@ -100,6 +117,8 @@ DEPENDENCIES = [
     "lame",
     "libapache2-mod-php5",
     "libssl0.9.8",
+    "libgsmme1c2a",
+    "libnspr4",
     "mp3info",
     "mysql-server",
     "php5",
@@ -111,4 +130,53 @@ DEPENDENCIES = [
     "sox",
     "subversion",
     "wget",
+]
+
+FREESWITCH_BINARIES = [
+    "libctb",
+    "libfreeswitch1",
+    "libjs1",
+
+    "freeswitch",
+    "freeswitch-mod-amr",
+    "freeswitch-mod-amrwb",
+    "freeswitch-mod-cdr-csv",
+    "freeswitch-mod-cepstral",
+    "freeswitch-mod-cluechoo",
+    "freeswitch-mod-codec2",
+    "freeswitch-mod-commands",
+    "freeswitch-mod-conference",
+    "freeswitch-mod-console",
+    "freeswitch-mod-dialplan-asterisk",
+    "freeswitch-mod-dialplan-directory",
+    "freeswitch-mod-dialplan-xml",
+    "freeswitch-mod-dingaling",
+    "freeswitch-mod-directory",
+    "freeswitch-mod-distributor",
+    "freeswitch-mod-dptools",
+    "freeswitch-mod-enum",
+    "freeswitch-mod-esf",
+    "freeswitch-mod-event-socket",
+    "freeswitch-mod-expr",
+    "freeswitch-mod-fifo",
+    "freeswitch-mod-fsv",
+    "freeswitch-mod-g723-1",
+    "freeswitch-mod-g729",
+    "freeswitch-mod-gsmopen",
+    "freeswitch-mod-h26x",
+    "freeswitch-mod-local-stream",
+    "freeswitch-mod-logfile",
+    "freeswitch-mod-loopback",
+    "freeswitch-mod-lua",
+    "freeswitch-mod-native-file",
+    "freeswitch-mod-say-en",
+    "freeswitch-mod-say-ru",
+    "freeswitch-mod-sndfile",
+    "freeswitch-mod-sofia",
+    "freeswitch-mod-speex",
+    "freeswitch-mod-spidermonkey",
+    "freeswitch-mod-tone-stream",
+    "freeswitch-mod-voicemail",
+    "freeswitch-mod-voicemail-ivr",
+    "freeswitch-mod-xml-curl",
 ]
