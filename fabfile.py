@@ -35,41 +35,41 @@ def deploy():
             install_cepstral()
             install_freeswitch()
 
+        with cd("esl/lib"):
+            sudo("sh install.ESL.sh")
+
         # Configs
         with cd("rootconf_1204"):
-            run("cp bin/setmixers /bin/")
-            run("cp -r etc/* /etc/")
+            sudo("cp bin/setmixers /bin/")
+            sudo("cp -r etc/* /etc/")
             run("cp -r opt/freeswitch /opt/")
 
         # Fix permissions for runnable scripts
-        run("chmod 0755 /etc/init.d/freeswitch")
-        run("chmod 0755 /etc/init.d/dispatcher_in")
-        run("chmod 0755 /etc/init.d/iwatch")
-        run("chmod 0755 /etc/init.d/gsmopen")
+        sudo("chmod 0755 /etc/init.d/freeswitch")
+        sudo("chmod 0755 /etc/init.d/dispatcher_in")
+        sudo("chmod 0755 /etc/init.d/iwatch")
+        sudo("chmod 0755 /etc/init.d/gsmopen")
 
-        run("a2enmod rewrite")
-        run("a2dissite default")
-        run("a2ensite freedomfone")
-
-        with cd("esl/lib"):
-            run("sh install.ESL.sh")
+        sudo("a2enmod rewrite")
+        sudo("a2dissite default")
+        sudo("a2ensite freedomfone")
 
         # Configure DB
-        run("service mysql restart")
+        sudo("service mysql restart")
         run("sh db_install.sh")
 
-        run("sh fix_perms_all.sh")
+        sudo("sh fix_perms_all.sh")
 
-        run("service apache2 reload")
-        run("service cron restart")
+        sudo("service apache2 reload")
+        sudo("service cron restart")
 
         # Interface Aliasing for OfficeRoute
-        run("/sbin/ifconfig eth0:0 192.168.1.250 netmask 255.255.255.0 up")
-        run("service gsmopen start")
+        sudo("/sbin/ifconfig eth0:0 192.168.1.250 netmask 255.255.255.0 up")
+        sudo("service gsmopen start")
 
-        run("service freeswitch start")
-        run("service gsmopen reload")
-        run("service dispatcher_in start")
+        sudo("service freeswitch start")
+        sudo("service gsmopen reload")
+        sudo("service dispatcher_in start")
 
 
 @task
@@ -81,11 +81,11 @@ def install_demo_data():
 
 
 def install_deps():
-    run("apt-get update")
+    sudo("apt-get update")
 
     # Avoid prompt for mysql and postfix
     with shell_env(DEBIAN_FRONTEND="noninteractive"):
-        run("apt-get install -y {0}".format(" ".join(DEPENDENCIES)))
+        sudo("apt-get install -y {0}".format(" ".join(DEPENDENCIES)))
 
 
 def install_cepstral():
@@ -104,7 +104,7 @@ def install_freeswitch():
     all_debs = ["{0}*deb".format(package) for package in FREESWITCH_BINARIES]
 
     run("wget -nc {0}".format(" ".join(all_urls)))
-    run("dpkg -i {0}".format(" ".join(all_debs)))
+    sudo("dpkg -i {0}".format(" ".join(all_debs)))
 
 
 DEPENDENCIES = [
