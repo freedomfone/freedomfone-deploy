@@ -2,7 +2,7 @@ Freedom Fone Deployment Scripts
 ===============================
 
 These project provides an automated deployment script for
-[Freedom Fone](http://freedomfone.org) that uses
+[Freedom Fone](http://freedomfone.org) version 2S4, that uses
 [Fabric](http://fabfile.org). There's also a
 [Vagrantfile](http://vagrantup.com) to easily setup a local VM with
 Ubuntu 12.04 to ease the setup of a local Freedom Fone installation.
