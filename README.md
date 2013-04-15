@@ -78,13 +78,10 @@ appropriate for your project.
 
 To use Vagrant, first you'll need [Virtual Box](http://virtualbox.org)
 installed. Download an installer from their website. For Vagrant
-itself, you can download a installer from their website (recommended)
-or use RubyGems, if you have [Ruby](http://www.ruby-lang.org)
-installed. As with Python, Ruby comes pre-installed in Mac OS X and
-can be easily installed on Linux using the respective package manager.
-If you have a working setup of Ruby with RubyGems, just type
-
-    $ gem install vagrant
+itself, you should download a installer from
+[their website](http://downloads.vagrantup.com) choosing the latest
+version and the package corresponding to your operating system (not
+the one you'll install Freedomfone into).
 
 After Vagrant is installed, you should be able to issue `vagrant`
 commands from the Terminal. You need to be in the same directory as
