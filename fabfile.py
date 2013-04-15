@@ -1,8 +1,9 @@
 from fabric.api import task, run, sudo, put, cd
+from fabric.contrib.files import exists
 from fabric.context_managers import shell_env
 
 
-BINARY_DOWNLOAD_SERVER="http://archive.freedomfone.org/installer_1204/"
+BINARY_DOWNLOAD_SERVER="http://archive.freedomfone.org/installer_1204"
 
 
 @task
@@ -17,7 +18,7 @@ def copy_public_key():
 
 
 @task
-def deploy():
+def deploy(vcs="git"):
     """Deploy a Freedom Fone instance to a clean installation of Ubuntu 12.04.
 
     This *might* work in a non clean install, but it was only tested
@@ -28,8 +29,14 @@ def deploy():
     install_deps()
 
     run("mkdir -p /opt/freedomfone")
+    run("mkdir -p /opt/freedomfone/packages")
+
     with cd("/opt/freedomfone"):
-        run("svn co https://dev.freedomfone.org/svn/freedomfone/branches/3.0/ .")
+        if vcs == "git":
+            if not exists("/opt/freedomfone/.git"):
+                run("git clone https://github.com/freedomfone/freedomfone.git .")
+        else:
+            run("svn co https://dev.freedomfone.org/svn/freedomfone/branches/3.0/ .")
 
         with cd("packages"):
             install_cepstral()
