@@ -34,7 +34,7 @@ def deploy(vcs="git"):
     with cd("/opt/freedomfone"):
         if vcs == "git":
             if not exists("/opt/freedomfone/.git"):
-                run("git clone -b 2.S.5 --sngle-branch https://github.com/freedomfone/freedomfone.git .")
+                run("git clone -b 2.S.5 --single-branch https://github.com/freedomfone/freedomfone.git .")
         else:
             run("svn co https://dev.freedomfone.org/svn/freedomfone/branches/3.0/ .")
 
