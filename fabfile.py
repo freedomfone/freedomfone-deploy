@@ -28,8 +28,8 @@ def deploy(vcs="git"):
     """
     install_deps()
 
-    run("mkdir -p /opt/freedomfone")
-    run("mkdir -p /opt/freedomfone/packages")
+    run("sudo mkdir -p /opt/freedomfone")
+    run("sudo mkdir -p /opt/freedomfone/packages")
 
     with cd("/opt/freedomfone"):
         if vcs == "git":
