@@ -17,16 +17,16 @@ instructions for multiple operating systems. Mac OS X and many Linux
 flavors already come with Python pre-installed. On Ubuntu 12.04 open 
 the command terminal and enter the following commands;
 
-    $apt-get install python-setuptools
+    $ apt-get install python-setuptools
 
 This should install all the required python utilities
 
-    $apt-get install git
+    $ apt-get install git
 
 Installs the git utilities required fro pulling the source code
 from the repository
 
-    apt-get install openssh-server
+    $ apt-get install openssh-server
     
 Installs ssh.
 Check to see if python has been installed using the command below
