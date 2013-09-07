@@ -29,15 +29,17 @@ def deploy(vcs="git"):
     install_deps()
 
     sudo("mkdir -p /opt/freedomfone")
-    sudo("mkdir -p /opt/freedomfone/packages")
+    
 
     with cd("/opt/freedomfone"):
         if vcs == "git":
             if not exists("/opt/freedomfone/.git"):
-                run("git clone -b 2.S.5 --single-branch git://github.com/freedomfone/freedomfone.git .")
+                run("git clone -b 2.S.5 https://github.com/freedomfone/freedomfone.git .")
         else:
             run("svn co https://dev.freedomfone.org/svn/freedomfone/branches/3.0/ .")
 
+        sudo("mkdir -p /opt/freedomfone/packages")
+        
         with cd("packages"):
             install_cepstral()
             install_freeswitch()
