@@ -11,10 +11,10 @@ def copy_public_key():
     """Copy your rsa public key from ~/.ssh/id_rsa.pub to the remote server.
     """
     put(local_path="~/.ssh/id_rsa.pub", remote_path="~/id_rsa.pub")
-    run("mkdir -p ~/.ssh")
-    run("cat ~/id_rsa.pub >> ~/.ssh/authorized_keys")
-    run("chmod -R 600 ~/.ssh")
-    run("rm ~/id_rsa.pub")
+    sudo("mkdir -p ~/.ssh")
+    sudo("cat ~/id_rsa.pub >> ~/.ssh/authorized_keys")
+    sudo("chmod -R 600 ~/.ssh")
+    sudo("rm ~/id_rsa.pub")
 
 
 @task
@@ -34,9 +34,9 @@ def deploy(vcs="git"):
     with cd("/opt/freedomfone"):
         if vcs == "git":
             if not exists("/opt/freedomfone/.git"):
-                run("git clone -b 2.S.5 https://github.com/freedomfone/freedomfone.git .")
+                sudo("git clone -b 2.S.5 https://github.com/freedomfone/freedomfone.git .")
         else:
-            run("svn co https://dev.freedomfone.org/svn/freedomfone/branches/3.0/ .")
+            sudo("svn co https://dev.freedomfone.org/svn/freedomfone/branches/3.0/ .")
 
         sudo("mkdir -p /opt/freedomfone/packages")
         
@@ -51,7 +51,7 @@ def deploy(vcs="git"):
         with cd("rootconf_1204"):
             sudo("cp bin/setmixers /bin/")
             sudo("cp -r etc/* /etc/")
-            run("cp -r opt/freeswitch /opt/")
+            sudo("cp -r opt/freeswitch /opt/")
 
         # Fix permissions for runnable scripts
         sudo("chmod 0755 /etc/init.d/freeswitch")
@@ -65,7 +65,7 @@ def deploy(vcs="git"):
 
         # Configure DB
         sudo("service mysql restart")
-        run("sh db_install.sh")
+        sudo("sh db_install.sh")
 
         sudo("sh fix_perms_all.sh")
 
@@ -86,7 +86,7 @@ def install_demo_data():
     """Installs a voice menu and leave a message service for testing and demo.
     """
     with cd("/opt/freedomfone"):
-        run("sh demo_install.sh")
+        sudo("sh demo_install.sh")
 
 
 def install_deps():
@@ -99,10 +99,10 @@ def install_deps():
 
 def install_cepstral():
     CEPSTRAL="Cepstral_Allison-8kHz_i386-linux_5.1.0"
-    run("wget -nc {0}/{1}.tar.gz".format(BINARY_DOWNLOAD_SERVER, CEPSTRAL))
-    run("tar zxvf {0}.tar.gz".format(CEPSTRAL))
+    sudo("wget -nc {0}/{1}.tar.gz".format(BINARY_DOWNLOAD_SERVER, CEPSTRAL))
+    sudo("tar zxvf {0}.tar.gz".format(CEPSTRAL))
     with cd(CEPSTRAL):
-        run("sh install.sh agree /opt/swift")
+        sudo("sh install.sh agree /opt/swift")
 
 
 def install_freeswitch():
@@ -112,7 +112,7 @@ def install_freeswitch():
                 for package in FREESWITCH_BINARIES]
     all_debs = ["{0}*deb".format(package) for package in FREESWITCH_BINARIES]
 
-    run("wget -nc {0}".format(" ".join(all_urls)))
+    sudo("wget -nc {0}".format(" ".join(all_urls)))
     sudo("dpkg -i {0}".format(" ".join(all_debs)))
 
 
